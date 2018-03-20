@@ -35,13 +35,9 @@ Boston, MA 02111-1307, USA.  */
 #define TARGET_OS_CPP_BUILTINS()					\
   do									\
     {									\
-	builtin_define ("__HAIKU__");					\
+	HAIKU_TARGET_OS_CPP_BUILTINS ();	\
 	builtin_define ("__INTEL__");					\
 	builtin_define ("_X86_");					\
-	builtin_define ("__stdcall=__attribute__((__stdcall__))");	\
-	builtin_define ("__cdecl=__attribute__((__cdecl__))");		\
-    builtin_define ("__STDC_ISO_10646__=201103L"); \
-	builtin_assert ("system=haiku");					\
     }									\
   while (0)
 
@@ -52,8 +48,12 @@ Boston, MA 02111-1307, USA.  */
 
 /* If ELF is the default format, we should not use /lib/elf.  */
 
-#undef	LINK_SPEC
-#define LINK_SPEC "-m elf_i386_haiku %{!r:-shared} %{nostart:-e 0} %{shared:-e 0} %{!shared: %{!nostart: -no-undefined}}"
+#define LINK_SPEC "-m elf_i386_haiku %{shared:-shared} \
+  %{!shared: \
+    %{!static: \
+      %{rdynamic:-export-dynamic} \
+      -dynamic-linker " HAIKU_DYNAMIC_LINKER "} \
+      %{static:-static}}"
 
 /* A C statement (sans semicolon) to output to the stdio stream
    FILE the assembler definition of uninitialized global DECL named

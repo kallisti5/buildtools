@@ -21,13 +21,6 @@ the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
 
-/* Change debugging to Dwarf2.  */
-#undef PREFERRED_DEBUGGING_TYPE
-#define PREFERRED_DEBUGGING_TYPE DWARF2_DEBUG
-
-#undef MCOUNT_NAME
-#define MCOUNT_NAME "_mcount"
-
 #define TARGET_DECLSPEC 1
 
 #undef SIZE_TYPE
@@ -39,6 +32,9 @@ Boston, MA 02111-1307, USA.  */
 #undef WCHAR_TYPE
 #define WCHAR_TYPE "int"
 
+#undef WINT_TYPE
+#define WINT_TYPE "int"
+
 #undef WCHAR_TYPE_SIZE
 #define WCHAR_TYPE_SIZE 32
 
@@ -47,7 +43,7 @@ Boston, MA 02111-1307, USA.  */
    CC1_SPEC is used for both cc1 and cc1plus.  */
 #undef CC1_SPEC
 #define CC1_SPEC \
-  "%{fpic|fPIC|fpie|fPIE|fno-pic|fno-PIC|fno-pie|fno-PIE:;:-fPIC} \
+  "%{!fno-pic:%{!fno-PIC:%{!fpic:%{!fPIC: -fPIC}}}} \
    %{!Wmultichar: -Wno-multichar} %(cc1_cpu) %{profile:-p}"
 
 #undef CC1PLUS_SPEC
@@ -62,17 +58,24 @@ Boston, MA 02111-1307, USA.  */
 #define USE_LD_AS_NEEDED 1
 #endif
 
+#undef  CPP_SPEC
+#define CPP_SPEC HAIKU_CPP_SPEC
+
 #undef  STARTFILE_SPEC
-#define STARTFILE_SPEC "crti.o%s crtbeginS.o%s %{!shared:%{!nostart:start_dyn.o%s}} init_term_dyn.o%s"
+#define STARTFILE_SPEC HAIKU_STARTFILE_SPEC
 
 #undef  ENDFILE_SPEC
-#define ENDFILE_SPEC "crtendS.o%s crtn.o%s"
+#define ENDFILE_SPEC HAIKU_ENDFILE_SPEC
+
+#undef  LIB_SPEC
+#define LIB_SPEC HAIKU_LIB_SPEC
 
 /* Every program on Haiku links against libroot which contains the pthread
    routines, so there's no need to explicitly call out when doing threaded
    work.  */
 #undef GOMP_SELF_SPECS
 #define GOMP_SELF_SPECS ""
+
 #undef GTM_SELF_SPECS
 #define GTM_SELF_SPECS ""
 
@@ -80,9 +83,9 @@ Boston, MA 02111-1307, USA.  */
 /* For a secondary compiler on a hybrid system, use alternative search paths.*/
 #define INCLUDE_DEFAULTS \
 { \
-    { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1, 0, 0 }, \
-    { GPLUSPLUS_TOOL_INCLUDE_DIR, "G++", 1, 1, 0, 0 }, \
-    { GPLUSPLUS_BACKWARD_INCLUDE_DIR, "G++", 1, 1, 0, 0 }, \
+    { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1, GPLUSPLUS_INCLUDE_DIR_ADD_SYSROOT, 0 }, \
+    { GPLUSPLUS_TOOL_INCLUDE_DIR, "G++", 1, 1, GPLUSPLUS_INCLUDE_DIR_ADD_SYSROOT, 0 }, \
+    { GPLUSPLUS_BACKWARD_INCLUDE_DIR, "G++", 1, 1, GPLUSPLUS_INCLUDE_DIR_ADD_SYSROOT, 0 }, \
     { GCC_INCLUDE_DIR, "GCC", 0, 0, 0, 0 }, \
     { FIXED_INCLUDE_DIR, "GCC", 0, 0, 0, 0 }, \
     { TOOL_INCLUDE_DIR, "BINUTILS", 0, 1, 0, 0 }, \
@@ -133,9 +136,9 @@ Boston, MA 02111-1307, USA.  */
    be appended to each search folder given below. */
 #define INCLUDE_DEFAULTS \
 { \
-    { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1, 0, 0 }, \
-    { GPLUSPLUS_TOOL_INCLUDE_DIR, "G++", 1, 1, 0, 0 }, \
-    { GPLUSPLUS_BACKWARD_INCLUDE_DIR, "G++", 1, 1, 0, 0 }, \
+    { GPLUSPLUS_INCLUDE_DIR, "G++", 1, 1, GPLUSPLUS_INCLUDE_DIR_ADD_SYSROOT, 0 }, \
+    { GPLUSPLUS_TOOL_INCLUDE_DIR, "G++", 1, 1, GPLUSPLUS_INCLUDE_DIR_ADD_SYSROOT, 0 }, \
+    { GPLUSPLUS_BACKWARD_INCLUDE_DIR, "G++", 1, 1, GPLUSPLUS_INCLUDE_DIR_ADD_SYSROOT, 0 }, \
     { GCC_INCLUDE_DIR, "GCC", 0, 0, 0, 0 }, \
     { FIXED_INCLUDE_DIR, "GCC", 0, 0, 0, 0 }, \
     { TOOL_INCLUDE_DIR, "BINUTILS", 0, 1, 0, 0 }, \
@@ -203,18 +206,17 @@ Boston, MA 02111-1307, USA.  */
 #define MATH_LIBRARY ""
 
 /* Haiku headers are C++-aware (and often use C++).  */
-#define NO_IMPLICIT_EXTERN_C
+#undef NO_IMPLICIT_EXTERN_C
+#define NO_IMPLICIT_EXTERN_C	1
 
 /* Only allow -lssp for SSP, as -lssp_nonshared is problematic in Haiku */
 #ifndef TARGET_LIBC_PROVIDES_SSP
 #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all:-lssp}"
 #endif
 
-/* Do not use JCR_SECTION_NAME default definition for Haiku */
-#define TARGET_NO_JCR_SECTION_NAME 1
-
-/* Do not desire to have _Jv_RegisterClasses in crtbegin.o for Haiku */
-#define TARGET_USE_JCR_SECTION 0
-
 /* Do not use TM clone registry in Haiku for now */
 #define USE_TM_CLONE_REGISTRY 0
+
+/* Always want PIE */
+#undef LINK_PIE_SPEC
+#define LINK_PIE_SPEC		"%{static|shared|r:;!no-pie:-pie -z now}"
