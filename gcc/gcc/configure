@@ -7385,7 +7385,10 @@ if test "${with_hybrid_secondary+set}" = set; then :
   withval=$with_hybrid_secondary; HYBRID_SECONDARY=$withval
 else
   HYBRID_SECONDARY=
+
 fi
+
+
 
 # With stabs
 
@@ -17661,7 +17664,7 @@ haiku*)
   shlibpath_overrides_runpath=yes
   sys_lib_search_path_spec='/boot/system/non-packaged/develop/lib /boot/system/develop/lib'
   sys_lib_dlsearch_path_spec='/boot/home/config/non-packaged/lib /boot/home/config/lib /boot/system/non-packaged/lib /boot/system/lib'
-  hardcode_into_libs=no
+  hardcode_into_libs=yes
   ;;
 
 hpux9* | hpux10* | hpux11*)
@@ -18456,7 +18459,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18458 "configure"
+#line 18462 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18562,7 +18565,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 18564 "configure"
+#line 18568 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -21322,7 +21325,7 @@ haiku*)
   shlibpath_overrides_runpath=yes
   sys_lib_search_path_spec='/boot/system/non-packaged/develop/lib /boot/system/develop/lib'
   sys_lib_dlsearch_path_spec='/boot/home/config/non-packaged/lib /boot/home/config/lib /boot/system/non-packaged/lib /boot/system/lib'
-  hardcode_into_libs=no
+  hardcode_into_libs=yes
   ;;
 
 hpux9* | hpux10* | hpux11*)
@@ -25241,6 +25244,7 @@ $as_echo "#define HAVE_AS_SPARC5_VIS4 1" >>confdefs.h
 
 fi
 
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking assembler for SPARC6 instructions" >&5
 $as_echo_n "checking assembler for SPARC6 instructions... " >&6; }
 if test "${gcc_cv_as_sparc_sparc6+set}" = set; then :
@@ -25276,6 +25280,7 @@ if test $gcc_cv_as_sparc_sparc6 = yes; then
 $as_echo "#define HAVE_AS_SPARC6 1" >>confdefs.h
 
 fi
+
 
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking assembler for LEON instructions" >&5
 $as_echo_n "checking assembler for LEON instructions... " >&6; }
